@@ -1,0 +1,51 @@
+{
+  "private": true,
+  "sideEffects": false,
+  "scripts": {
+    "generate:css": "tailwindcss -i app/styles/tailwind.css -o app/tailwind.css",
+    "build:css": "npm run generate:css -- -m",
+    "build:remix": "remix build",
+    "build": "run-s \"build:*\"",
+    "dev:css": "npm run generate:css -- -w",
+    "dev:remix": "remix watch",
+    "dev:wrangler": "cross-env NODE_ENV=development wrangler pages dev ./public --local",
+    "dev": "remix build && run-p \"dev:*\"",
+    "start": "cross-env NODE_ENV=production npm run dev:wrangler",
+    "fmt": "prettier --write --cache .",
+    "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
+    "typecheck": "tsc -b",
+    "test": "playwright test",
+    "validate": "run-p fmt lint typecheck test"
+  },
+  "dependencies": {
+    "@remix-run/cloudflare": "*",
+    "@remix-run/cloudflare-pages": "*",
+    "@remix-run/react": "*",
+    "clsx": "^1.2.1",
+    "cross-env": "^7.0.3",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "tiny-invariant": "^1.2.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^3.14.1",
+    "@playwright/test": "^1.25.1",
+    "@remix-run/dev": "*",
+    "@remix-run/eslint-config": "*",
+    "@types/react": "^17.0.47",
+    "@types/react-dom": "^17.0.17",
+    "autoprefixer": "^10.4.8",
+    "eslint": "^8.20.0",
+    "eslint-config-prettier": "^8.5.0",
+    "npm-run-all": "^4.1.5",
+    "postcss": "^8.4.16",
+    "prettier": "^2.7.1",
+    "prettier-plugin-tailwindcss": "^0.1.13",
+    "tailwindcss": "^3.1.8",
+    "typescript": "^4.7.4",
+    "wrangler": "^2.0.27"
+  },
+  "engines": {
+    "node": ">=16.13"
+  }
+}
