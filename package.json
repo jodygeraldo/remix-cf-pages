@@ -9,7 +9,7 @@
     "dev:css": "npm run generate:css -- -w",
     "dev:remix": "remix watch",
     "dev:wrangler": "cross-env NODE_ENV=development wrangler pages dev ./public --local",
-    "dev": "remix build && run-p \"dev:*\"",
+    "dev": "npm run build && run-p \"dev:*\"",
     "start": "cross-env NODE_ENV=production npm run dev:wrangler",
     "fmt": "prettier --write --cache .",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
