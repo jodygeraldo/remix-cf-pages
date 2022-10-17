@@ -2,6 +2,10 @@
 
 - [Remix Docs](https://remix.run/docs)
 
+```sh
+npx create-remix@latest --template jodygeraldo/remix-cf-pages
+```
+
 ## What's in the stack
 
 - [Cloudflare Pages](https://pages.cloudflare.com/)
