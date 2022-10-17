@@ -12,7 +12,7 @@
     "dev": "npm run build && run-p \"dev:*\"",
     "start": "cross-env NODE_ENV=production npm run dev:wrangler",
     "fmt": "prettier --write --cache .",
-    "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
+    "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint --ignore-path .gitignore .",
     "typecheck": "tsc -b",
     "test": "playwright test",
     "validate": "run-p fmt lint typecheck test"
