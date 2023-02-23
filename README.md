@@ -14,6 +14,7 @@ npx create-remix@latest --template jodygeraldo/remix-cf-pages
 - Code formatting with [Prettier](https://prettier.io)
 - Linting with [ESLint](https://eslint.org)
 - Static Types with [TypeScript](https://typescriptlang.org)
+- Streaming enabled
 
 ## Development
 

@@ -1,18 +1,20 @@
 name: Validate
+
 on:
   push:
-    branches: [main, master, dev]
+    branches:
+      - main
+      - dev
   pull_request:
-    branches: [main, master, dev]
 
 jobs:
   lint:
     name: ⬣ ESLint
     runs-on: ubuntu-latest
+    concurrency:
+      group: eslint-${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
     steps:
-      - name: 🛑 Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.9.1
-
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v3
 
@@ -20,9 +22,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: 'npm'
+          cache: "npm"
 
-      - name: 📥 Download deps
+      - name: 📥 Install dependencies
         run: npm ci
 
       - name: 🔬 Lint
@@ -31,10 +33,10 @@ jobs:
   typecheck:
     name: ʦ TypeScript
     runs-on: ubuntu-latest
+    concurrency:
+      group: typecheck-${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
     steps:
-      - name: 🛑 Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.9.1
-
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v3
 
@@ -42,22 +44,21 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: 'npm'
+          cache: "npm"
 
-      - name: 📥 Download deps
+      - name: 📥 Install dependencies
         run: npm ci
 
       - name: 🔎 Type check
-        run: npm run typecheck --if-present
+        run: npm run typecheck
 
-  playwright:
-    name: 🎭 Playwright
+  e2e:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    concurrency:
+      group: e2e-${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
     steps:
-      - name: 🛑 Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.9.1
-
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v3
 
@@ -65,25 +66,35 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: 'npm'
+          cache: "npm"
 
-      - name: 📥 Download deps
+      - name: 📥 Install dependencies
         run: npm ci
 
-      - name: Get installed Playwright version
+      - name: 👉 Get installed Playwright version
         id: playwright-version
-        run: echo "::set-output name=version::$(npx playwright --version | grep -h 'Version ')"
+        run: echo "version=$(npx playwright --version | grep -h 'Version')" >> $GITHUB_OUTPUT
 
-      - uses: actions/cache@v3
+      - name: ☁ Cache
+        uses: actions/cache@v3
         id: playwright-cache
         with:
-          path: '~/.cache/ms-playwright'
-          key: '${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}'
+          path: "~/.cache/ms-playwright"
+          key: "${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}"
           restore-keys: |
             ${{ runner.os }}-playwright-
-      - name: Install Playwright Browsers
+
+      - name: 📥 Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
 
       - name: 🎭 Run Playwright
-        run: npx playwright test --workers=4
+        run: npm test
+
+      - name: ☁ Uploader artifact
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30

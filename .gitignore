@@ -3,13 +3,9 @@ node_modules
 /.cache
 /functions/\[\[path\]\].js
 /functions/\[\[path\]\].js.map
-/functions/_assets
 /public/build
-.dev.vars
 .env
-
-/app/tailwind.css
-
+.dev.vars
 /test-results/
 /playwright-report/
 /playwright/.cache/
